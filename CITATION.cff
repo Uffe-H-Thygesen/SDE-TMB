@@ -1,0 +1,32 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: SDE-TMB
+message: 'R code for stochastic differential equations using template model builder'
+type: software
+authors:
+  - given-names: Uffe Høgsbro
+    family-names: Thygesen
+    email: uhth@dtu.dk
+    affiliation: DTU
+    orcid: 'https://orcid.org/0000-0002-4311-6324'
+identifiers:
+repository-code: 'https://github.com/Uffe-H-Thygesen/SDE-TMB'
+url: 'https://uffe-h-thygesen.github.io/SDE-TMB/'
+abstract: >-
+  R code for numerical analysis of stochastic
+  differential equations using TMB. Reproduces figures in
+  the scientific papers (preprings) 
+
+  . Computation of transition probabilities
+
+  . Simulation/reestimation in SDE models
+
+  . Order analysis of Euler-Stratonovich and Strang schemes
+keywords:
+  - Stochastic differential equation
+  - Laplace approximation
+  - State estimation
+  - Parameter estimation
+license: GPL-3.0+
