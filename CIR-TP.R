@@ -5,6 +5,8 @@
 ## or the equivalanet Stratonovich equation
 ##
 ## Using several variants  of the Laplace approximation in TMB
+##
+## uhth, 2025
 
 ###########################################################
 ## Model specifiation
@@ -42,15 +44,14 @@ require(SDEtools)
 
 myapprox <- function(xi,yi,xo) approx(xi,yi,xo,yleft=head(yi,1),yright=tail(yi,1))$y
 
+x0 <- 0.5               # Initial position
+T <- 1                  # Terminal times
 
-x0 <- 0.5
-T <- 1
-
-dt <- 2^-10
+dt <- 2^-10             # Time steps
 tv <- seq(0,T,dt)
 nt <- length(tv)
 
-xTs <- seq(0.1,2.5,0.1)
+xTs <- seq(0.1,2.5,0.1) # Terminal positions to examine
 
 #############################################################
 ## TMB: Stratonovich formulation
@@ -84,6 +85,7 @@ p0.S <- list(X=Xinit,x=1,y=1,dt=diff(tv)[1])
 require(RTMB)
 obj.S <- MakeADFun(nloglik.S,p0.S,random=c("X"))
 
+## Function to compute the transition probability 
 dSDE.S <- function(y,x,T,return.list = FALSE,log=FALSE)
 {
     ## Initial guess on all parameters
@@ -151,20 +153,12 @@ p0.dB <- list(dB=dB,x=1,y=1,dt=diff(tv)[1],epsilon=1e-4)
 ## Construct likelihood function by integrating out dB
 obj.dB <- MakeADFun(nloglik.dB,p0.dB,random=c("dB"))
 
+## Function to compute the transition probability
 dSDE.dB <- function(y,x,T,return.list = FALSE,log=FALSE)
 {
-    ## Initial guess on all parameters
-    ## t <- seq(0,T,length(tv))
     dt <- T/(length(tv)-1)
     
-    ## Xinit <- approx(c(0,T),c(x,y),t)$y
-    ## xX <- head(Xinit,-1)
-    ## dB <- (diff(Xinit) - fI(xX)*dt ) / g(xX)
-
     epsilon <- 1e-4
-
-    ## p0 <- list(dB=dB,x=x,y=y,dt=dt,epsilon=epsilon)
-    ## obj.dB$env$last.par <- unlist(p0)
 
     p <- c(x=x,y=y,dt,epsilon)
     logpdf <- -obj.dB$fn(p)
@@ -211,9 +205,9 @@ p0.XdB <- list(X=X,dB=dB,x=1,y=1,dt=diff(tv)[1],epsilon=1e-4)
 ## Construct likelihood function by integrating out dB
 obj.XdB <- MakeADFun(nloglik.XdB,p0.XdB,random=c("X","dB"))
 
+## Function to compute the transition probability
 dSDE.XdB <- function(y,x,T,return.list = FALSE,log=FALSE)
 {
-    ## Initial guess on all parameters
     t <- seq(0,T,length(tv))
     dt <- T/(length(tv)-1)
     
@@ -265,7 +259,6 @@ obj.X <- MakeADFun(nloglik.X,p0.X,random=c("X"))
 
 dSDE.X <- function(y,x,T,return.list = FALSE,log=FALSE)
 {
-    ## Initial guess on all parameters
     t <- seq(0,T,length(tv))
     dt <- T/(length(tv)-1)
     
@@ -296,6 +289,7 @@ dSDE.X <- function(y,x,T,return.list = FALSE,log=FALSE)
 }
 
 ####################################################
+## Compute transition probabilities using all methods
 
 tAs <- system.time(pAs <- sapply(xTs,function(y)pA(y,x0,T)))
 tBs <- system.time(pBs <- sapply(xTs,function(y)dSDE.dB(y,x0,T)))
@@ -303,6 +297,7 @@ tXdBs <- system.time(pXdBs <- sapply(xTs,function(y)dSDE.XdB(y,x0,T)))
 tXs <- system.time(pXs <- sapply(xTs,function(y)dSDE.X(y,x0,T)))
 tSs <- system.time(pSs <- sapply(xTs,function(y)dSDE.S(y,x0,T)))
 
+## Plot transition probabilities
 pdf(file="CIR-TP.pdf")
 par(mfrow=c(2,1))
 
@@ -324,6 +319,7 @@ legend("topright",legend=c("True","dB","XdB","X","S"),pty=c(1,NA,NA,NA,NA),lty=c
 
 dev.off()
 
+## Construct and plot errors
 pdf(file="CIR-TP-ERR.pdf")
 
 par(mfrow=c(2,1))

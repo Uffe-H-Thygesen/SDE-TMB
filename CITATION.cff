@@ -17,7 +17,7 @@ url: 'https://uffe-h-thygesen.github.io/SDE-TMB/'
 abstract: >-
   R code for numerical analysis of stochastic
   differential equations using TMB. Reproduces figures in
-  the scientific papers (preprings) 
+  the scientific papers (preprints) 
 
   . Computation of transition probabilities
 
