@@ -8,6 +8,7 @@
 require(RTMB)
 
 ## End point of the bridge
+
 x0 <- 1
 xT <- 1
 T <- 1
@@ -23,6 +24,7 @@ mydlnorm <- function(x,logm,logs,log=FALSE)
     d <- dnorm(log(x),logm,logs,log=TRUE) - log(x)
     if(log) return(d) else return(exp(d))
 }
+
 
 ## Joint p.d.f. of a number of intermediate points
 p.d.f <- function(xv,do.X=TRUE,do.plot=FALSE)
